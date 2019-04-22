@@ -162,15 +162,20 @@ class RegForm(FlaskForm):
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-    def validateUsername(self,username):
+
+
+    def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise validationError('Username is already taken')
+            raise ValidationError('That username is taken. Please choose a different one.')
 
-    def validatEmail(self,email):
+    def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise validationError('email is already taken')
+            raise ValidationError('That email is taken. Please choose a different one.')
+
+
+ 
 
 
 class LoginForm(FlaskForm):
@@ -326,7 +331,7 @@ def register():
       form = RegForm()
       if form.validate_on_submit():
          hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-         u = User( form.username.data, form.email.data,hashed_pw, "user")
+         u = User( form.username.data.lower(), form.email.data.lower(),hashed_pw, "user")
         
          db.session.add(u)
          db.session.commit()

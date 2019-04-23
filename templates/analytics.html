@@ -2,76 +2,105 @@
 {% block content %}
 
 <style>
-    #ana {
-        text-align: left;
+    .table {
+        text-align: center !important;
+    }
+
+    tbody:hover{
+        background-color: #333!important;
+        color: brown!important;
     }
 </style>
 
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="chart">
+                        <embed type="image/svg+xml" src={{ rtData|safe }} />
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-<div id="ana">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="chart">
+                        <embed type="image/svg+xml" src={{ tweetData|safe }} />
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="panel panel-default">
+    </div>
 
 
+
+    <div class="row">
+
+        <div class="col-sm-12" height=12em>
+            <div class="panel panel-default">
+                <div class="panel-body">
                     <div id="chart">
                         <embed type="image/svg+xml" src={{ chartdata|safe }} />
                     </div>
                 </div>
             </div>
-
-            <div class="col-sm-6">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <div id="chart">
-                            <embed type="image/svg+xml" src={{ tweetData|safe }} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
         </div>
 
 
-        <div class="container jumbotron content-section">
-            <table class="table">
-
-                <thead >
-
-                    <tr>
-                        <th scope="col">User id</th>
-                        <th scope="col">FirstName</th>
-                        <th scope="col">LastName</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% for user in Users %}
-                    <tr>
-                        <th scope="row">{{user.id}}</th>
-                        <td>{{user.firstname}}</td>
-                        <td>{{user.lastname}}</td>
-                        <td>{{user.username}}</td>
-                        <td>{{user.email}}</td>
-                        <td> {{user.role}}</td>
-                    </tr>
-                    {%endfor%}
-
-                </tbody>
-            </table>
-        </div>
 
     </div>
 
+
+   
+
+    <div class="row container jumbotron content-section">
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+                    <td>id</td>
+                    <td>FirstName</td>
+                    <td>LastName</td>
+                    <td>Username</td>
+                    <td>Email</td>
+                    <td>Role</td>
+                    <td><i class="glyphicon glyphicon-option-horizontal"></i></td>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for user in Users %}
+                <tr>
+                    <td>{{user.id}}</td>
+                    <td>{{user.firstname}}</td>
+                    <td>{{user.lastname}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                    <td> {{user.role}}</td>
+                    <td>
+                            <a href="{{ url_for('analytics') }}/{{user.username}}"><i
+                                class="glyphicon glyphicon-trash" title="delete" ></i></a>
+                             <a href="{{ url_for('analytics') }}/role/{{user.username}}"><i title="promote/demote" class="glyphicon glyphicon-sort"></i></a>
+
+                    </td>
+                </tr>
+                {%endfor%}
+
+            </tbody>
+        </table>
+
+
+    </div>
 </div>
 
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>

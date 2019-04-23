@@ -19,7 +19,7 @@ from flask_wtf.file import FileField, FileAllowed
 
 from flask_bcrypt import Bcrypt
 
-from pygal.style import Style
+from pygal.style import Style, DarkStyle
  
 from email.utils import parsedate_tz, mktime_tz
 
@@ -138,6 +138,8 @@ class User(db.Model,UserMixin):
     def toDict(self):
         return {
             'id': self.id,
+            'firstname':self.firstname,
+            'lastname':self.lastname,
             'username': self.username,
             'email': self.email,
             'password': self.password,
@@ -223,22 +225,18 @@ class UpdateAccountForm(FlaskForm):
 
 
 # routes
-
-
- 
-
 custom_style = Style(
   background='transparent',
-  plot_background='transparent',
+#   plot_background='transparent',
   foreground='#ffff',
   foreground_strong='#fff',
   foreground_subtle='#fffa',
   opacity='.6',
   opacity_hover='.9',
   transition='400ms ease-in',
-  value_colors = '#fff'
-#   colors=('#E853A0', '#E8537A', '#E95355', '#E87653', '#E89B53'))
-)
+  value_colors = '#fff',
+  colors=('#E853A0', '#E8537A', '#E95355', '#E87653', '#E89B53'))
+
 
 
 
@@ -251,7 +249,7 @@ def setup():
    User.query.filter(User.username == "Admin").delete()
    Admin_pw = bcrypt.generate_password_hash("password").decode('utf-8')
    admin = User( "Admin","admin@tnrp.com",Admin_pw, "Admin")
-   admin.id=1
+   admin.id=0
    db.session.add(admin)
  
    db.session.commit()
@@ -295,8 +293,8 @@ def home():
 
    if current_user.is_authenticated:
       tweetLoader("trinidad is not a real place -filter:retweets")
-      tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
-      TweetCharts()
+      # tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
+      # TweetCharts()
       page = request.args.get('page',1,type=int)
       records = Tweet.query.order_by(Tweet.date_posted.desc()).paginate(page=page,per_page=6)
       return render_template("feed.html",Tweets=records)
@@ -331,7 +329,7 @@ def register():
       form = RegForm()
       if form.validate_on_submit():
          hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-         u = User( form.username.data.lower(), form.email.data.lower(),hashed_pw, "user")
+         u = User( form.username.data.lower(), form.email.data.lower(),hashed_pw, "User")
         
          db.session.add(u)
          db.session.commit()
@@ -354,22 +352,41 @@ def logout():
 def analytics():
 
    if current_user.role =="Admin":
-      records = User.query.all()
+      a=0
+      b=0
+      records = User.query.offset(1).all()
       image_file = url_for('static', filename='propics/' + current_user.image_file)
       chartData= UserCharts()
-      tweetchart=TweetCharts()
-      return render_template('analytics.html', tweetData=tweetchart, chartdata=chartData, Users=records,title='analytics',image_file=image_file)
+      tweetchart=TweetCharts()     
+      for status in tweepy.Cursor(api.search,q="trinidad is not a real place filter:retweets",count=1000,lang="en").items():
+         a=a+1
+      for status in tweepy.Cursor(api.search,q="trinidad is not a real place ",count=1000,lang="en").items():
+         b=b+1
+      
+      rtChartdata=rtChart(a,b)
+
+      return render_template('analytics.html', rtData=rtChartdata, tweetData=tweetchart, chartdata=chartData, Users=records,title='analytics',image_file=image_file)
    else:
       return redirect(url_for('home'))
 
+def rtChart(a,b):
    
+   pie_chart = pygal.Pie(show_legend=False,  style=DarkStyle)
+   pie_chart.title = 'Tweets vs Retweets'
+   pie_chart.add('Tweets', (b-a))
+   pie_chart.add('Retweets', a)
+  
+   graphdata= pie_chart.render_data_uri()
+   return graphdata
+
+
 def UserCharts():
  
    users = [None,None,None,None,None,None,None,None,None,None,None,None]
    for x in range(12):
       num=User.query.filter(extract('month', User.date_joined)==x+1).count()
       users[x]=num   
-   line_chart = pygal.Bar(show_minor_y_labels=False,show_legend=False,  style=custom_style)
+   line_chart = pygal.Bar(height=300, show_minor_y_labels=False,show_legend=False,  style=DarkStyle)
    line_chart.x_labels = 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'
 
    line_chart.title = 'New Users 2019'
@@ -383,7 +400,7 @@ def TweetCharts():
    for x in range(24):
       num=Tweet.query.filter(extract('hour', Tweet.date_posted)==x).count()
       tweets[x]=num
-   radar_chart = pygal.Radar(show_legend=False, show_minor_y_labels=False, fill=True,  style=custom_style)
+   radar_chart = pygal.Radar(show_legend=False, show_minor_y_labels=False, fill=True,  style=DarkStyle)
    radar_chart.title = 'Post Time'
    radar_chart.x_labels = range(0,24)
    radar_chart.render_data_uri()
@@ -394,7 +411,7 @@ def TweetCharts():
    return graphdata
 
  
-@app.route("/account", methods=['GET', 'POST'])
+@app.route("/account", methods=['GET', 'POST', ])
 @login_required
 def account():
     form = UpdateAccountForm()
@@ -418,19 +435,35 @@ def account():
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
 
+@app.route("/analytics/<username>", methods=['GET'])
+@login_required
+def deleteUser(username):
+   if current_user.role =="Admin":
+      User.query.filter(User.username == username).delete()
+      db.session.commit()
+      return redirect(url_for('analytics'))
+   else:
+      return redirect(url_for('home'))
 
-# @app.route('/api/persons/<id>', methods=['PUT'])
-# def api_update_person(id):
-#     data = None
-#     if request.content_type  == 'application/x-www-form-urlencoded':
-#         data = request.form
-#     elif request.content_type == 'application/json':
-#         data = request.json
-#     return jsonify(updatePerson(data, id))
 
-# @app.route('/api/persons/<id>', methods=['DELETE'])
-# def api_delete_person(id):
-#     return jsonify(deletePerson(id))
+@app.route("/analytics/role/<username>", methods=['GET'])
+@login_required
+def promoteUser(username):
+   if current_user.role =="Admin":
+      user= User.query.filter(User.username == username).first()
+      if user.role =="User":
+         User.query.filter(User.username == username).update(dict(role='Admin'))
+         db.session.commit()
+         return redirect(url_for('analytics'))
+      elif user.role=="Admin":
+         User.query.filter(User.username == username).update(dict(role='User'))
+         db.session.commit()
+         return redirect(url_for('analytics'))
+          
+   else:
+      return redirect(url_for('home'))
+
+
  
 if __name__ == '__main__':
     app.run(debug=False)

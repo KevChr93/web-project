@@ -4,15 +4,30 @@
 
 
 <style>
- 
+ @media screen and (max-width: 992px) {
+  body {
+   max-height:650px!important ;
+  }
+}
 
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+  body {
+    max-height:615px!important ;
+  }
+  .log{
+    margin-bottom: 20%!important;
+
+  }
+}
+ 
   .log {
     width: 20% !important;
     min-width: 300px !important;
     background-color: #222 !important;
     border-radius: 25px 25px !important;
     margin-top: auto !important;
-    margin-bottom: 5em !important;
+    margin-bottom: 20%!important;
     -webkit-filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.466));
     filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.466));
   }

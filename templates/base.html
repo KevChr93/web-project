@@ -19,7 +19,8 @@
     <style>
         body {
 
-            min-width: 550px!important;
+            /* min-width: 550px; */
+            /* max-height: 930px !important; */
             text-align: center;
             background-color: #222;
             background-image: url("{{ url_for('static', filename='bg.jpg') }}");
@@ -60,9 +61,12 @@
         }
 
         .panel-heading {
-            background-color: rgb(136, 0, 0) !important;
-            color: aliceblue !important;
+            background-color: rgb(136, 0, 0)!important;
+            color: black !important;
             border-color: black !important;
+            -webkit-filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.616));
+            filter: drop-shadow(0px 8px 10px rgba(0, 0, 0, 0.616));
+
 
         }
 
@@ -88,6 +92,10 @@
         }
 
         footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
             height: 5em !important;
 
 
@@ -111,7 +119,7 @@
         .btn-info:hover {
             border-color: white;
 
-            filter: brightness(75%) !important;
+            filter: brightness(125%) !important;
         }
 
         /* EXAMPLE 9 - Center with Flexbox and Text*/
@@ -161,7 +169,7 @@
 
 
     <div class="container navcon">
-        <nav class="navbar  navbar-fixed-top navbar-inverse">
+        <nav class="navbar navbar-inverse navbar-fixed-top ">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -237,6 +245,7 @@
 </header>
 
 <body>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
@@ -268,20 +277,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.js"></script>
 
 
-    
 
-    <footer class="footer">
-        <div class="container">
-            <span class="text-muted">
-                <p><br>Kevin Christopher, Amrit Sookhai,<br> Ashida Ali, Sharlima Seebaran,<br></p>
-            </span>
-        </div>
-    </footer>
+
 
 
 
 
 
 </body>
+
+<footer class="footer">
+    <div class="container">
+        <span class="text-muted">
+            <p><br>Kevin Christopher, Amrit Sookhai,<br> Ashida Ali, Sharlima Seebaran,<br></p>
+        </span>
+    </div>
+</footer>
 
 </html>

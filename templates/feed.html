@@ -6,8 +6,28 @@
         text-align: left !important;
     }
 
+    .tbla {
+        max-height: 44em;
+
+        overflow-x: hidden;
+        overflow: scroll;
+    }
+
+
+    ::-webkit-scrollbar {
+        width: 0px;
+        /* Remove scrollbar space */
+        background: transparent;
+        /* Optional: just make scrollbar invisible */
+    }
+
     .jumbotron {
         color: black !important;
+    }
+
+    .dis {
+        max-height: 51em;
+
     }
 
     .twitter-tweet {
@@ -16,102 +36,121 @@
 
     }
 
+
+    .glyphicon-refresh {
+        font-size: 12px !important;
+    }
+
+    .btn-outline-danger,
+    .btn-danger {
+        color: aliceblue !important;
+        border-color: brown !important;
+    }
+
+    .btn-default {
+        width: 90% !important;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: brown !important;
+        filter: brightness(125%) !important;
+
+    }
+
     p {
         font-size: 12px !important;
         font-family: fantasy;
 
     }
-    .fig{
-        text-align: center!important;
+
+    .fig {
+        text-align: center !important;
     }
 
     h6 {
         color: rgb(165, 42, 42) !important;
     }
 </style>
-<div class="container">
+<div class="container dis">
     <div class="row">
         <div class="panel  ">
             <div class="panel-heading">
                 <div class="media">
                     <a class="media-left" href="#fake">
                         <img alt="" class="media-object img-rounded" height="34px"
-                            src="{{ url_for('static', filename='logo.png') }}">
+                            src="{{ url_for('static', filename='logo1.png') }}">
                     </a>
 
-
                     <div class="media-body">
-                        <div class="form-group has-feedback">
-                            <label class="control-label sr-only" for="inputSuccess5">Hidden label</label>
-                            <input type="text" class="form-control" id="search2" aria-describedby="search">
-                            <span class="glyphicon glyphicon-camera form-control-feedback" aria-hidden="true"></span>
-                            <span id="search2" class="sr-only">(success)</span>
+                            <div class="form-group has-feedback">
+                                  <a title="Refresh tweets" href="{{ url_for('home') }}/refresh" class="btn btn-default glyphicon glyphicon-refresh" role="button">Refresh</a></span>
+
+                            </div>
                         </div>
-                    </div>
                 </div>
             </div>
 
 
 
+            <div class="tbla ">
 
 
+                {% for t in Tweets.items %}
+                <div class="fig ">
+                    <blockquote class=" twitter-tweet" width="520px" data-lang="en" data-dnt="true"
+                        background-colour="#E81C4F" data-link-color="#E81C4F">
 
-            {% for t in Tweets.items %}
-            <div class="fig">
-                <blockquote class=" twitter-tweet" width="520px"  data-lang="en" data-dnt="true" background-colour="#E81C4F"
-                    data-link-color="#E81C4F">
-
-                    <div class="jumbotron col-sm-5 media">
-                        <a class="media-left" href="#fake">
-                            <img alt="" class="media-object img-rounded" href="{{t.pro_pic}}" height="35px"
-                                src="{{t.pro_pic}}">
-                        </a>
-
-
-                        <div class="media-body">
-                            <h6 class="media-heading">@{{t.user_name}}</h6>
-
-                            {% if t.inTextAUrl=="NoUrl" %}
-
-                            <p>{{t.tweetText}}</p>
-                            <img alt="" class="tweetmedia" src={{t.media}}>
+                        <div class="jumbotron col-sm-5 media">
+                            <a class="media-left" href="#fake">
+                                <img alt="" class="media-object img-rounded" href="{{t.pro_pic}}" height="35px"
+                                    src="{{t.pro_pic}}">
+                            </a>
 
 
-                            {% else %}
-                            <p>{{t.tweetText}}</p>
+                            <div class="media-body">
+                                <h6 class="media-heading">@{{t.user_name}}</h6>
 
-                            <img alt="" class="tweetmedia" src={{t.inTextAUrl}}>
+                                {% if t.inTextAUrl=="NoUrl" %}
 
-                            <a href="{{t.inTextAUrl}}">Click here</a>
-                            {%endif%}
+                                <p>{{t.tweetText}}</p>
+                                <img alt="" class="tweetmedia" src={{t.media}}>
 
-                            <!-- <ul class="nav nav-pills nav-pills-custom">
+
+                                {% else %}
+                                <p>{{t.tweetText}}</p>
+
+                                <img alt="" class="tweetmedia" src={{t.inTextAUrl}}>
+
+                                <a href="{{t.inTextAUrl}}">Click here</a>
+                                {%endif%}
+
+                                <!-- <ul class="nav nav-pills nav-pills-custom">
                             <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-retweet"></span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-star"></span></a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-option-horizontal"></span></a></li>
                           </ul> -->
+                            </div>
                         </div>
-                    </div>
 
-                    <p lang="en" dir="ltr">
-                        <a
-                            href="https://twitter.com/{{t.user_name}}/status/{{t.tweet_id}}?ref_src={{t.inTextAUrl}}"></a>
-                    </p>
+                        <p lang="en" dir="ltr">
+                            <a
+                                href="https://twitter.com/{{t.user_name}}/status/{{t.tweet_id}}?ref_src={{t.inTextAUrl}}"></a>
+                        </p>
 
 
-                </blockquote>
+                    </blockquote>
+                </div>
+
+
+
+
+
+
+
+                {% endfor %}
             </div>
 
-
-
-
-
-
-
-            {% endfor %}
-
-<hr>
             {% for page_num in Tweets.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
             {% if page_num %}
             {% if Tweets.page == page_num %}
@@ -124,12 +163,11 @@
             {% endif %}
             {% endfor %}
 
-            <hr>
+            <p><br></p>
 
 
         </div>
     </div>
-
 
 </div>
 {% endblock content %}

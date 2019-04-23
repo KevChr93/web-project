@@ -4,21 +4,23 @@
 
 
 <style>
+ 
 
-.log{
-  width: 20%!important;
-  min-width: 300px!important;
-  background-color: #222!important;
-  border-radius: 25px 25px !important;
- margin-top: auto!important;
- margin-bottom: 5em!important;  
- -webkit-filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.466));
-  filter: drop-shadow(8px 8px 10px  rgba(0, 0, 0, 0.466));
-}  
-h1{
+  .log {
+    width: 20% !important;
+    min-width: 300px !important;
+    background-color: #222 !important;
+    border-radius: 25px 25px !important;
+    margin-top: auto !important;
+    margin-bottom: 5em !important;
+    -webkit-filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.466));
+    filter: drop-shadow(8px 8px 10px rgba(0, 0, 0, 0.466));
+  }
 
-  color: aliceblue!important;
-}
+  h1 {
+
+    color: aliceblue !important;
+  }
 </style>
 
 <body>
@@ -40,13 +42,14 @@ h1{
       <h1>T.N.R.P</h1>
 
     </p>
-
-    <div class="container">
-      <a type="button" class="btn btn-info" href="{{ url_for('login') }}">log-in</a>
-      <hr>
-
-      <a type="button" href="{{ url_for('register') }}" class="btn btn-info">Sign-up</a>
-      <hr>
-    </div>
+    <p>
+      <div class="container">
+        <a type="button" class="btn btn-info" href="{{ url_for('login') }}">log-in</a>
+<br>
+<br>
+        <a type="button" href="{{ url_for('register') }}" class="btn btn-info">Sign-up</a>
+      </div>
+    </p>
   </div>
+
   {% endblock content %}

@@ -253,8 +253,10 @@ def setup():
    db.session.add(admin)
  
    db.session.commit()
-
-   logout_user()
+   tweetLoader("trinidad is not a real place -filter:retweets")
+   tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
+    
+   # logout_user()
 
 
 def tweetLoader(terms):
@@ -283,8 +285,14 @@ def tweetLoader(terms):
                   db.session.commit()
 
 
-                  
+@app.route("/refresh")
+@app.route("/home/refresh")   
+def refreshTweets():
+   tweetLoader("trinidad is not a real place -filter:retweets")
+   tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
+   return redirect(url_for('home'))
 
+    
 
 
 @app.route("/")
@@ -292,9 +300,6 @@ def tweetLoader(terms):
 def home():
 
    if current_user.is_authenticated:
-      tweetLoader("trinidad is not a real place -filter:retweets")
-      # tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
-      # TweetCharts()
       page = request.args.get('page',1,type=int)
       records = Tweet.query.order_by(Tweet.date_posted.desc()).paginate(page=page,per_page=6)
       return render_template("feed.html",Tweets=records)

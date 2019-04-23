@@ -256,7 +256,7 @@ def setup():
    tweetLoader("trinidad is not a real place -filter:retweets")
    tweetLoader("#TrinidadIsNotARealPlace -filter:retweets")
     
-   # logout_user()
+   logout_user()
 
 
 def tweetLoader(terms):

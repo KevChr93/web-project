@@ -48,7 +48,7 @@ auth.set_access_token(twitter_cred.ACCESS_TOKEN, twitter_cred.ACCESS_TOKEN_SECRE
 api = tweepy.API(auth)
 app = Flask(__name__)
  
-host="https://nameless-springs-34236.herokuapp.com/"
+host="https://tnrp.herokuapp.com"
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
